@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+/* External LEDs expected on PA1-PA7 (the board has no onboard LEDs) */
 #define LED_PORT PORTA
 #define LED_MASK 0xFE  /* PA1-PA7, skip PA0 (UPDI) */
 
