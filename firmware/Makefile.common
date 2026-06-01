@@ -1,0 +1,30 @@
+MCU     = avr32db28
+F_CPU   = 4000000UL
+CC      = avr-gcc
+OBJCOPY = avr-objcopy
+
+CFLAGS  = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -Wall -std=c11
+
+PORT    = /dev/ttyUSB0
+BAUD    = 115200
+
+TARGET ?= main
+
+all: $(TARGET).hex
+
+$(TARGET).elf: $(TARGET).c
+	$(CC) $(CFLAGS) -o $@ $<
+
+$(TARGET).hex: $(TARGET).elf
+	$(OBJCOPY) -O ihex $< $@
+
+flash: $(TARGET).hex
+	pymcuprog write -t uart -u $(PORT) -b $(BAUD) -d $(MCU) --erase -f $<
+
+ping:
+	pymcuprog ping -t uart -u $(PORT) -b $(BAUD) -d $(MCU)
+
+clean:
+	rm -f $(TARGET).elf $(TARGET).hex
+
+.PHONY: all flash ping clean

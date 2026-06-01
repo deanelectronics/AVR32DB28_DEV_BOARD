@@ -1,0 +1,19 @@
+# Claude Code local config
+.claude/
+
+# Build artifacts
+*.elf
+*.hex
+*.o
+*.map
+
+# KiCad
+*-backups/
+*.kicad_prl
+fp-info-cache
+_autosave-*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
