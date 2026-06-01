@@ -6,7 +6,7 @@ Open-source development board based on the Microchip AVR32DB28 microcontroller.
 
 - AVR32DB28 microcontroller (32 KB flash, 8-bit, 4 MHz internal oscillator)
 - All GPIO ports broken out via headers for external connections
-- Serial UPDI programming via USB/UART adapter (no dedicated programmer needed)
+- Two programming modes via onboard switch: Atmel-ICE (Mode 1) or USB-C Serial UPDI (Mode 2)
 - Expandable via addon boards
 
 ## Repository Structure

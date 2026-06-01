@@ -1,18 +1,15 @@
-# Programming the AVR32DB28 via Serial UPDI
+# Programming the AVR32DB28
 
-## Hardware Requirements
+The board has two programming modes, selectable via the onboard switch:
 
-- USB to UART adapter (CH340 or similar)
-- 1 kohm resistor between TX and the UPDI pin (PA0) on the board
-- RX connected to the UPDI pin (same node as TX, after the resistor)
+| Mode | Connector | Programmer |
+|------|-----------|------------|
+| 1    | UPDI header | Atmel-ICE |
+| 2    | USB-C | Serial UPDI (no external programmer needed) |
 
-```
-USB-UART TX ---[1kohm]---+--- PA0 (UPDI)
-USB-UART RX -------------+
-USB-UART GND ----------- GND
-```
+---
 
-## Linux Setup
+## Linux Setup (USB-C / Serial UPDI)
 
 ### 1. Install the toolchain
 
@@ -31,6 +28,8 @@ bash tools/install_dfp.sh
 
 ### 3. Build and flash
 
+Set the switch to **Mode 2**, connect the USB-C cable, then:
+
 ```bash
 cd firmware/examples/blink
 make flash
@@ -38,7 +37,7 @@ make flash
 
 ---
 
-## Windows Setup (Microchip Studio)
+## Windows Setup (USB-C / Serial UPDI, Microchip Studio)
 
 ### 1. Install avrdude
 
@@ -49,19 +48,20 @@ Download the avrdude 7.x Windows release (a single `.exe`, no installer needed):
 
 ### 2. Find your COM port
 
-Open Device Manager (`Win+X` → Device Manager) and look under **Ports (COM & LPT)**
-for an entry like `USB-SERIAL CH340 (COM3)`. Note the COM number.
+Set the switch to **Mode 2** and connect the USB-C cable. Open Device Manager
+(`Win+X` → Device Manager) and look under **Ports (COM & LPT)** for an entry
+like `USB-SERIAL CH340 (COM3)`. Note the COM number.
 
 ### 3. Configure Microchip Studio
 
 Go to **Tools → External Tools → Add** and fill in:
 
-| Field             | Value                                                                                     |
-|-------------------|-------------------------------------------------------------------------------------------|
-| Title             | Flash Serial UPDI                                                                         |
-| Command           | `C:\avrdude\avrdude.exe`                                                                  |
+| Field             | Value                                                                                         |
+|-------------------|-----------------------------------------------------------------------------------------------|
+| Title             | Flash Serial UPDI                                                                             |
+| Command           | `C:\avrdude\avrdude.exe`                                                                      |
 | Arguments         | `-c serialupdi -p avr32db28 -P COMXX -b 115200 -U flash:w:"$(ProjectDir)$(TargetName).hex":i` |
-| Initial directory | `$(ProjectDir)`                                                                           |
+| Initial directory | `$(ProjectDir)`                                                                               |
 
 Replace `COMXX` with your actual COM port (e.g. `COM3`).
 
@@ -80,5 +80,5 @@ Check **Use Output Window**, then click OK.
 | Error | Cause | Fix |
 |-------|-------|-----|
 | `cannot open port` | Wrong COM port | Check Device Manager, update Arguments in External Tools |
-| `UPDI initialisation failed` | Wiring issue | Check resistor and connections |
+| `UPDI initialisation failed` | Wrong mode or bad connection | Verify switch is in Mode 2 and USB-C is connected |
 | No entry under COM & LPT | Missing CH340 driver | Search for and install "CH340 driver" |
